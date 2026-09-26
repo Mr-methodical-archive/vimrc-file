@@ -1,0 +1,109 @@
+" =========================
+" General Settings
+" =========================
+set nocompatible
+set number
+set relativenumber
+set colorcolumn=80
+syntax on
+set mouse=a
+set backspace=indent,eol,start
+set laststatus=2
+set showmatch
+set hidden
+set scrolloff=8
+set cursorline
+set updatetime=300
+
+" Some contest machines may have older/minimal Vim builds
+if exists('+signcolumn')
+    set signcolumn=yes
+endif
+
+" Use system clipboard if this Vim build supports it
+if has('clipboard')
+    set clipboard=unnamedplus
+endif
+
+
+" =========================
+" Indentation
+" =========================
+set expandtab
+set tabstop=2
+set shiftwidth=2
+set autoindent
+set smartindent
+filetype plugin indent on
+
+
+" =========================
+" Search
+" =========================
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+set wildmenu
+set path+=**
+
+
+" =========================
+" Save Shortcut
+" =========================
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <Esc>:w<CR>a
+
+
+" =========================
+" Escape Shortcuts
+" =========================
+inoremap jk <Esc>
+inoremap kj <Esc>
+
+
+" =========================
+" Auto-close Pairs
+" =========================
+inoremap ( ()<Left>
+inoremap [ []<Left>
+inoremap " ""<Left>
+
+
+" =========================
+" Smart Apostrophe
+" =========================
+function! SmartApostrophe()
+    let pre_char = getline('.')[col('.') - 2]
+    if pre_char =~ '\w'
+        return "'"
+    endif
+    return "''\<Left>"
+endfunction
+
+inoremap <expr> ' SmartApostrophe()
+
+
+" =========================
+" Smart Curly Braces
+" =========================
+inoremap { {}<Left>
+
+" Enter inside {} becomes:
+" {
+"     |
+" }
+inoremap <expr> <CR> getline('.')[col('.')-2:col('.')-1]=='{}'
+            \ ? "\<CR>\<Esc>O"
+            \ : "\<CR>"
+
+
+" =========================
+" Compile + Run
+" =========================
+
+" C
+autocmd FileType c nnoremap <F5> :w<CR>:!clang -Wall -std=c99 % -o %< && ./%<<CR>
+
+" C++ / competitive programming
+autocmd FileType cpp nnoremap <F5> :w<CR>:!g++ -std=c++20 -O2 -Wall % -o %< && ./%<<CR>
